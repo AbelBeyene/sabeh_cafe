@@ -5,6 +5,9 @@ import { ThemeProvider, createTheme } from '@mui/material'
 import CssBaseline from '@mui/material/CssBaseline'
 import Menu from './components/Menu'
 import Navbar from './components/Navbar'
+import Login from './components/Admin/Login'
+import Dashboard from './components/Admin/Dashboard'
+import ProtectedRoute from './components/Admin/ProtectedRoute'
 
 const queryClient = new QueryClient()
 
@@ -35,6 +38,15 @@ function App() {
           <Navbar />
           <Routes>
             <Route path="/" element={<Menu />} />
+            <Route path="/manage" element={<Login />} />
+            <Route
+              path="/manage/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
           </Routes>
         </Router>
         <ReactQueryDevtools />
