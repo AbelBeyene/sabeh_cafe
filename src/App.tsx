@@ -1,5 +1,5 @@
 // src/App.tsx
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import {
@@ -134,7 +134,7 @@ function App() {
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 textAlign: { xs: 'center', sm: 'left' },
-                gap: 1,
+                gap: 3,
               }}
             >
               <Typography variant="body2" sx={{ flexGrow: { sm: 1 } }}>
