@@ -1,5 +1,4 @@
-// src/components/Menu.tsx
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import {
   AppBar,
@@ -8,197 +7,251 @@ import {
   Drawer,
   Container,
   Card,
-  CardContent,
+  CardActionArea,
   CardMedia,
+  CardContent,
   Typography,
   Box,
   Chip,
   CircularProgress,
   useTheme,
   useMediaQuery,
+  Divider,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
 } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
+import CloseIcon from '@mui/icons-material/Close'
 import { motion } from 'framer-motion'
 import { menuItems, categories } from '../data/menuData'
 import type { MenuItem } from '../types/menu'
 import logo from '../assets/logo.png'
 
 const MotionCard = motion(Card)
-const drawerWidth = 240
+const drawerWidth = 260
 
-const fetchMenuItems = async (): Promise<MenuItem[]> => {
-  return new Promise((resolve) => {
-    setTimeout(() => resolve(menuItems), 500)
-  })
-}
+const fetchMenuItems = async (): Promise<MenuItem[]> =>
+  new Promise((res) => setTimeout(() => res(menuItems), 500))
 
-const Menu = () => {
+const Menu: React.FC = () => {
   const theme = useTheme()
   const isMdUp = useMediaQuery(theme.breakpoints.up('md'))
 
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [selectedCategory, setSelectedCategory] = useState<string>('all')
+  const [selectedCategory, setSelectedCategory] = useState('all')
+  const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null)
+  const [detailOpen, setDetailOpen] = useState(false)
 
   const { data: items, isLoading } = useQuery({
     queryKey: ['menuItems'],
     queryFn: fetchMenuItems,
   })
+  const filtered: MenuItem[] = items?.filter(
+    (i: MenuItem) => selectedCategory === 'all' || i.category === selectedCategory
+  ) || []
 
-  const filteredItems = items?.filter(
-    (item) => selectedCategory === 'all' || item.category === selectedCategory
-  )
-
-  const handleDrawerToggle = () => {
-    setMobileOpen((open) => !open)
+  const toggleDrawer = () => setMobileOpen((o) => !o)
+  const handleCardClick = (item: MenuItem) => {
+    setSelectedItem(item)
+    setDetailOpen(true)
   }
+  const handleDetailClose = () => setDetailOpen(false)
 
   if (isLoading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh">
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="60vh"
+        bgcolor="background.default"
+      >
         <CircularProgress />
       </Box>
     )
   }
 
-  // The drawer content (chip list)
-  const drawer = (
-    <Box sx={{ p: 2 }}>
-      <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', mb: 2 }}>
-        <img src={logo} alt="Logo" style={{ width: '100%', maxWidth: 220, height: 80, objectFit: 'contain' }} />
-      </Box>
-      <Typography variant="h6" gutterBottom>
-        Categories
-      </Typography>
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-        <Chip
-          label="All"
-          onClick={() => {
-            setSelectedCategory('all')
-            if (!isMdUp) setMobileOpen(false)
-          }}
-          color={selectedCategory === 'all' ? 'primary' : 'default'}
+  /* Drawer content */
+  const drawerContent = (
+    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <Box
+        sx={{
+          px: 2,
+          py: 1,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}
+      >
+        <Box
+          component="img"
+          src={logo}
+          alt="Logo"
+          sx={{ height: 36, objectFit: 'contain' }}
         />
-        {categories.map((cat) => (
+        {!isMdUp && (
+          <IconButton onClick={toggleDrawer}>
+            <CloseIcon />
+          </IconButton>
+        )}
+      </Box>
+      <Divider />
+      <Box sx={{ p: 2, flexGrow: 1, overflowY: 'auto' }}>
+        <Typography variant="subtitle1" gutterBottom>
+          Categories
+        </Typography>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
           <Chip
-            key={cat.id}
-            label={`${cat.icon} ${cat.name}`}
+            label="All"
+            variant={selectedCategory === 'all' ? 'filled' : 'outlined'}
+            color="primary"
             onClick={() => {
-              setSelectedCategory(cat.id)
-              if (!isMdUp) setMobileOpen(false)
+              setSelectedCategory('all')
+              if (!isMdUp) toggleDrawer()
             }}
-            color={selectedCategory === cat.id ? 'primary' : 'default'}
+            sx={{ textTransform: 'none' }}
           />
-        ))}
+          {categories.map((cat) => (
+            <Chip
+              key={cat.id}
+              label={`${cat.icon} ${cat.name}`}
+              variant={selectedCategory === cat.id ? 'filled' : 'outlined'}
+              color="primary"
+              onClick={() => {
+                setSelectedCategory(cat.id)
+                if (!isMdUp) toggleDrawer()
+              }}
+              sx={{ textTransform: 'none' }}
+            />
+          ))}
+        </Box>
       </Box>
     </Box>
   )
 
   return (
-    <Box sx={{ display: 'flex' }}>
-      {/* AppBar with hamburger on mobile */}
+    <Box sx={{ display: 'flex', bgcolor: 'background.default' }}>
+      {/* Mobile AppBar */}
       {!isMdUp && (
-        <AppBar position="fixed">
+        <AppBar
+          position="fixed"
+          color="inherit"
+          elevation={1}
+          sx={{ zIndex: theme.zIndex.drawer + 1 }}
+        >
           <Toolbar>
-            <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-              <img src={logo} alt="Logo" style={{ width: '100%', maxWidth: 60, height: 60, objectFit: 'contain', background: 'white', padding: 8, borderRadius: '50%', boxSizing: 'content-box' }} />
-            </Box>
-            <IconButton
-              color="inherit"
-              edge="start"
-              onClick={handleDrawerToggle}
-              sx={{ position: 'absolute', left: 8 }}
-            >
+            <IconButton edge="start" onClick={toggleDrawer}>
               <MenuIcon />
             </IconButton>
+            <Box
+              component="img"
+              src={logo}
+              alt="Logo"
+              sx={{ height: 32, mx: 2, objectFit: 'contain' }}
+            />
+            <Typography variant="h6" color="text.primary" noWrap>
+              Sabeh Cafe
+            </Typography>
           </Toolbar>
         </AppBar>
       )}
 
-      {/* Navigation drawer */}
-      <Box
-        component="nav"
-        sx={{ width: { md: drawerWidth }, flexShrink: 0 }}
-      >
+      {/* Drawer */}
+      <Box component="nav" sx={{ width: { md: drawerWidth }, flexShrink: 0 }}>
         <Drawer
           variant={isMdUp ? 'permanent' : 'temporary'}
           open={isMdUp ? true : mobileOpen}
-          onClose={handleDrawerToggle}
-          ModalProps={{ keepMounted: true }} // better mobile performance
-          sx={{
-            '& .MuiDrawer-paper': {
+          onClose={toggleDrawer}
+          ModalProps={{ keepMounted: true }}
+          PaperProps={{
+            sx: {
               width: drawerWidth,
-              boxSizing: 'border-box',
+              bgcolor: 'background.paper',
+              boxShadow: 3,
+              border: 'none',
             },
           }}
         >
-          {drawer}
+          {drawerContent}
         </Drawer>
       </Box>
 
-      {/* Main content */}
+      {/* Main */}
       <Box
         component="main"
         sx={{
           flexGrow: 1,
           p: 3,
-          // push content below AppBar on mobile
-          ...( !isMdUp && { mt: theme.spacing(7) }),
+          ...( !isMdUp && { mt: theme.spacing(8) }),
         }}
       >
         <Container maxWidth="lg">
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-            {filteredItems?.map((item) => (
-              <Box
-                key={item.id}
-                sx={{
-                  width: {
-                    xs: '100%',
-                    sm: 'calc(50% - 8px)',
-                    md: 'calc(25% - 12px)',
-                  },
-                  maxWidth: 260,
-                }}
-              >
+          <Box
+            sx={{
+              display: 'grid',
+              gap: 3,
+              gridTemplateColumns: {
+                xs: 'repeat(auto-fill, minmax(140px, 1fr))',
+                md: 'repeat(auto-fill, minmax(200px, 1fr))',
+              },
+            }}
+          >
+            {filtered.map((item: MenuItem) => (
+              <CardActionArea key={item.id} sx={{ width: '100%', maxWidth: 160 }} onClick={() => handleCardClick(item)}>
                 <MotionCard
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3 }}
                   sx={{
-                    height: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
+                    borderRadius: 2,
+                    boxShadow: 2,
+                    overflow: 'hidden',
+                    transition: 'transform 0.3s, box-shadow 0.3s',
+                    width: '100%',
+                    maxWidth: 160,
                     '&:hover': {
                       transform: 'translateY(-4px)',
-                      transition: 'transform 0.2s ease-in-out',
+                      boxShadow: 6,
                     },
-                    p: 1,
                   }}
                 >
-                  <CardMedia
-                    component="img"
-                    height="140"
-                    image={item.image}
-                    alt={item.name}
-                    sx={{ objectFit: 'cover' }}
-                  />
-                  <CardContent sx={{ flexGrow: 1 }}>
-                    <Typography gutterBottom variant="h5" component="h2">
-                      {item.name}
-                      {item.amharicName && (
-                        <Typography
-                          component="span"
-                          variant="subtitle1"
-                          color="text.secondary"
-                          sx={{ ml: 1 }}
-                        >
-                          ({item.amharicName})
-                        </Typography>
-                      )}
-                    </Typography>
+                  <Box sx={{ position: 'relative' }}>
+                    <CardMedia
+                      component="img"
+                      height="70"
+                      image={item.image}
+                      alt={item.name}
+                      sx={{
+                        objectFit: 'cover',
+                        transition: 'transform 0.3s',
+                        '&:hover': { transform: 'scale(1.05)' },
+                      }}
+                    />
+                    <Box
+                      sx={{
+                        position: 'absolute',
+                        bottom: 0,
+                        left: 0,
+                        width: '100%',
+                        bgcolor: 'rgba(0,0,0,0.4)',
+                        color: '#fff',
+                        py: 0.5,
+                        px: 1,
+                      }}
+                    >
+                      <Typography variant="subtitle2">{item.name}</Typography>
+                    </Box>
+                  </Box>
+                  <CardContent sx={{ py: 0.5, px: 1 }}>
                     <Typography
                       variant="body2"
                       color="text.secondary"
-                      sx={{ mb: 1, fontSize: '0.85rem' }}
+                      noWrap
+                      title={item.description}
+                      sx={{ fontSize: '0.7rem' }}
                     >
                       {item.description}
                     </Typography>
@@ -207,18 +260,34 @@ const Menu = () => {
                         display: 'flex',
                         justifyContent: 'space-between',
                         alignItems: 'center',
+                        mt: 1,
                       }}
                     >
-                      <Typography variant="h6" color="primary">
+                      <Typography variant="subtitle2" color="primary" sx={{ fontSize: '0.95rem' }}>
                         {item.price.toFixed(0)} Birr
                       </Typography>
                     </Box>
                   </CardContent>
                 </MotionCard>
-              </Box>
+              </CardActionArea>
             ))}
           </Box>
         </Container>
+        <Dialog open={detailOpen} onClose={handleDetailClose} maxWidth="xs" fullWidth>
+          <DialogTitle>{selectedItem?.name} {selectedItem?.amharicName && <span style={{ color: '#795548', fontWeight: 400, fontSize: 16 }}>({selectedItem.amharicName})</span>}</DialogTitle>
+          <DialogContent>
+            {selectedItem && (
+              <Box display="flex" flexDirection="column" alignItems="center" gap={2}>
+                <img src={selectedItem.image} alt={selectedItem.name} style={{ width: '100%', maxWidth: 240, borderRadius: 8, marginBottom: 8 }} />
+                <Typography variant="body1" sx={{ mb: 1 }}>{selectedItem.description}</Typography>
+                <Typography variant="h6" color="primary">{selectedItem.price} Birr</Typography>
+              </Box>
+            )}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleDetailClose} color="primary" variant="contained">Close</Button>
+          </DialogActions>
+        </Dialog>
       </Box>
     </Box>
   )

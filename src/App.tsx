@@ -1,174 +1,170 @@
+// src/App.tsx
+import React, { useState } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
-import { ThemeProvider, createTheme } from '@mui/material'
-import CssBaseline from '@mui/material/CssBaseline'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import {
+  ThemeProvider,
+  createTheme,
+  CssBaseline,
+  Container,
+  Box,
+  Avatar,
+  Typography,
+  Link,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  Stack,
+} from '@mui/material'
+
 import Menu from './components/Menu'
-import Navbar from './components/Navbar'
 import Login from './components/Admin/Login'
 import Dashboard from './components/Admin/Dashboard'
 import ProtectedRoute from './components/Admin/ProtectedRoute'
-import { useState } from 'react'
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Box, Avatar } from '@mui/material'
 
 const queryClient = new QueryClient()
 
-const theme = createTheme({
+const customTheme = createTheme({
   palette: {
     mode: 'light',
-    primary: {
-      main: '#795548',
-    },
-    secondary: {
-      main: '#8d6e63',
-    },
-    background: {
-      default: '#f5f5f5',
-    },
+    primary: { main: '#795548' },
+    secondary: { main: '#8d6e63' },
+    background: { default: '#f5f5f5' },
   },
   typography: {
     fontFamily: '"Poppins", "Helvetica", "Arial", sans-serif',
   },
 })
 
-function AppLayout({ children }: { children: React.ReactNode }) {
-  const location = useLocation()
-  const isAdmin = location.pathname.startsWith('/manage')
-  return (
-    <>
-      {!isAdmin && <Navbar />}
-      {children}
-    </>
-  )
-}
+const developers = [
+  { name: 'Million Demeke', href: 'https://t.me/lifam21', avatar: 'M' },
+  { name: 'Abel Beyene', href: 'https://abel-codes.vercel.app/', avatar: 'A' },
+]
 
 function App() {
   const [open, setOpen] = useState(false)
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
+
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider theme={theme}>
+      <ThemeProvider theme={customTheme}>
         <CssBaseline />
+
         <Router>
-          <AppLayout>
-            <Routes>
-              <Route path="/" element={<Menu />} />
-              <Route path="/manage" element={<Login />} />
-              <Route
-                path="/manage/dashboard"
-                element={
-                  <ProtectedRoute>
-                    <Dashboard />
-                  </ProtectedRoute>
-                }
-              />
-            </Routes>
-          </AppLayout>
+          <Routes>
+            <Route path="/" element={<Menu />} />
+            <Route path="/manage" element={<Login />} />
+            <Route
+              path="/manage/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
         </Router>
-        <Dialog open={open} onClose={handleClose} maxWidth="xs" fullWidth>
-          <DialogTitle sx={{ fontSize: 18 }}>Developers</DialogTitle>
-          <DialogContent>
-            <Box display="flex" flexDirection="column" gap={1.5} alignItems="center">
-              <Box width="100%" display="flex" flexDirection="column" alignItems="center" gap={1.5}>
-                <Box display="flex" alignItems="center" gap={1.2} width="100%" justifyContent="center" p={0} m={0}>
-                  <Avatar sx={{ bgcolor: '#795548', width: 28, height: 28, fontSize: 16 }}>M</Avatar>
-                  <a
-                    href="https://t.me/lifam21"
+
+        {/* Contact Developers Dialog */}
+        <Dialog open={open} onClose={handleClose} fullWidth maxWidth="xs">
+          <DialogTitle>
+            <Typography variant="h6" align="center">
+              Meet the Developers
+            </Typography>
+          </DialogTitle>
+          <DialogContent dividers>
+            <Stack spacing={2} alignItems="center">
+              {developers.map((dev) => (
+                <Box
+                  key={dev.name}
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    width: '100%',
+                    px: 2,
+                    py: 1,
+                    borderRadius: 2,
+                    bgcolor: 'background.paper',
+                    boxShadow: 1,
+                    transition: 'transform 0.2s',
+                    '&:hover': { transform: 'scale(1.02)', boxShadow: 3 },
+                  }}
+                >
+                  <Avatar sx={{ bgcolor: 'primary.main', mr: 2 }}>
+                    {dev.avatar}
+                  </Avatar>
+                  <Link
+                    href={dev.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    style={{
-                      color: '#795548',
-                      fontWeight: 500,
-                      textDecoration: 'underline',
-                      fontSize: 13,
-                      padding: 0,
-                      margin: 0,
-                    }}
+                    variant="subtitle1"
+                    underline="hover"
+                    sx={{ flexGrow: 1, color: 'text.primary', fontWeight: 600 }}
                   >
-                    Million Demeke
-                  </a>
+                    {dev.name}
+                  </Link>
                 </Box>
-                <Box display="flex" alignItems="center" gap={1.2} width="100%" justifyContent="center" p={0} m={0}>
-                  <Avatar sx={{ bgcolor: '#795548', width: 28, height: 28, fontSize: 16 }}>A</Avatar>
-                  <a
-                    href="https://abel-codes.vercel.app/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{
-                      color: '#795548',
-                      fontWeight: 500,
-                      textDecoration: 'underline',
-                      fontSize: 13,
-                      padding: 0,
-                      margin: 0,
-                    }}
-                  >
-                    Abel Beyene
-                  </a>
-                </Box>
-              </Box>
-            </Box>
+              ))}
+            </Stack>
           </DialogContent>
-          <DialogActions>
-            <Button
-              onClick={handleClose}
-              color="primary"
-              variant="contained"
-              size="small"
-              sx={{ fontSize: 13, px: 2, py: 0.5 }}
-            >
+          <DialogActions sx={{ justifyContent: 'center', pb: 2 }}>
+            <Button onClick={handleClose} color="primary" variant="contained" size="small">
               Close
             </Button>
           </DialogActions>
         </Dialog>
-        <footer
-          style={{
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            padding: '10px 20px',
-            background: '#795548',
+
+        {/* Responsive Footer */}
+        <Box
+          component="footer"
+          sx={{
+            mt: 4,
+            bgcolor: 'primary.main',
             color: '#fff',
-            fontWeight: 500,
-            fontSize: 13,
-            borderTop: '1px solid #eee',
-            marginTop: 24,
+            py: { xs: 3, sm: 2 },
+            px: { xs: 2, sm: 4 },
           }}
         >
-          <span style={{ width: 80 }}></span>
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 2,
-              flex: 1,
-              justifyContent: 'center',
-            }}
-          >
-            <span style={{ fontSize: 13 }}>+251947218149</span>
-            <Button
-              onClick={handleOpen}
-              color="secondary"
-              variant="contained"
-              size="small"
+          <Container maxWidth="lg">
+            <Box
               sx={{
-                fontSize: 13,
-                marginLeft: 2,
-                textTransform: 'none',
-                fontWeight: 500,
-                boxShadow: 'none',
-                background: '#8d6e63',
-                '&:hover': {
-                  background: '#795548',
-                },
+                display: 'flex',
+                flexDirection: { xs: 'column', sm: 'row' },
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                textAlign: { xs: 'center', sm: 'left' },
+                gap: 1,
               }}
             >
-              Contact Devs
-            </Button>
-          </Box>
-          <span style={{ width: 80 }}></span>
-        </footer>
+              <Typography variant="body2" sx={{ flexGrow: { sm: 1 } }}>
+                &copy; {new Date().getFullYear()} Sabeh Cafe. All rights reserved.
+              </Typography>
+
+              <Typography variant="body2">
+                Contact:{' '}
+                <Link href="tel:+251907268333" color="inherit" underline="always">
+                  +251 907 268 333
+                </Link>
+              </Typography>
+
+              <Button
+                onClick={handleOpen}
+                variant="text"
+                sx={{
+                  color: '#fff',
+                  textTransform: 'none',
+                  fontWeight: 500,
+                  '&:hover': { bgcolor: 'rgba(255,255,240,0.1)' },
+                }}
+              >
+                Meet the Devs
+              </Button>
+            </Box>
+          </Container>
+        </Box>
       </ThemeProvider>
     </QueryClientProvider>
   )
