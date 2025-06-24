@@ -1,5 +1,4 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom'
 import { ThemeProvider, createTheme } from '@mui/material'
 import CssBaseline from '@mui/material/CssBaseline'
@@ -61,7 +60,6 @@ function App() {
             </Routes>
           </AppLayout>
         </Router>
-        <ReactQueryDevtools />
       </ThemeProvider>
     </QueryClientProvider>
   )

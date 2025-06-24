@@ -1,12 +1,12 @@
 import { AppBar, Toolbar, Typography, Container } from '@mui/material'
-import LocalCafeIcon from '@mui/icons-material/LocalCafe'
+import logo from '../assets/logo.svg'
 
 const Navbar = () => {
   return (
     <AppBar position="static" elevation={0}>
       <Container maxWidth="lg">
         <Toolbar>
-          <LocalCafeIcon sx={{ mr: 2 }} />
+          <img src={logo} alt="Logo" style={{ height: 40, marginRight: 16, background: 'white', padding: 4, borderRadius: '50%', boxSizing: 'content-box' }} />
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Sabeh Cafe
           </Typography>

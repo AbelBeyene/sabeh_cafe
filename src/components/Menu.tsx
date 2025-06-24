@@ -11,7 +11,6 @@ import {
   CardContent,
   CardMedia,
   Typography,
-  Button,
   Box,
   Chip,
   CircularProgress,
@@ -22,6 +21,7 @@ import MenuIcon from '@mui/icons-material/Menu'
 import { motion } from 'framer-motion'
 import { menuItems, categories } from '../data/menuData'
 import type { MenuItem } from '../types/menu'
+import logo from '../assets/logo.png'
 
 const MotionCard = motion(Card)
 const drawerWidth = 240
@@ -63,6 +63,9 @@ const Menu = () => {
   // The drawer content (chip list)
   const drawer = (
     <Box sx={{ p: 2 }}>
+      <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', mb: 2 }}>
+        <img src={logo} alt="Logo" style={{ width: '100%', maxWidth: 220, height: 80, objectFit: 'contain' }} />
+      </Box>
       <Typography variant="h6" gutterBottom>
         Categories
       </Typography>
@@ -96,14 +99,17 @@ const Menu = () => {
       {!isMdUp && (
         <AppBar position="fixed">
           <Toolbar>
+            <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <img src={logo} alt="Logo" style={{ width: '100%', maxWidth: 60, height: 60, objectFit: 'contain', background: 'white', padding: 8, borderRadius: '50%', boxSizing: 'content-box' }} />
+            </Box>
             <IconButton
               color="inherit"
               edge="start"
               onClick={handleDrawerToggle}
+              sx={{ position: 'absolute', left: 8 }}
             >
               <MenuIcon />
             </IconButton>
-            <Typography variant="h6">Menu</Typography>
           </Toolbar>
         </AppBar>
       )}
@@ -140,16 +146,17 @@ const Menu = () => {
         }}
       >
         <Container maxWidth="lg">
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 3 }}>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
             {filteredItems?.map((item) => (
               <Box
                 key={item.id}
                 sx={{
                   width: {
                     xs: '100%',
-                    sm: 'calc(50% - 12px)',
-                    md: 'calc(33.33% - 16px)',
+                    sm: 'calc(50% - 8px)',
+                    md: 'calc(25% - 12px)',
                   },
+                  maxWidth: 260,
                 }}
               >
                 <MotionCard
@@ -164,11 +171,12 @@ const Menu = () => {
                       transform: 'translateY(-4px)',
                       transition: 'transform 0.2s ease-in-out',
                     },
+                    p: 1,
                   }}
                 >
                   <CardMedia
                     component="img"
-                    height="200"
+                    height="140"
                     image={item.image}
                     alt={item.name}
                     sx={{ objectFit: 'cover' }}
@@ -190,7 +198,7 @@ const Menu = () => {
                     <Typography
                       variant="body2"
                       color="text.secondary"
-                      sx={{ mb: 2 }}
+                      sx={{ mb: 1, fontSize: '0.85rem' }}
                     >
                       {item.description}
                     </Typography>
@@ -204,13 +212,6 @@ const Menu = () => {
                       <Typography variant="h6" color="primary">
                         {item.price.toFixed(0)} Birr
                       </Typography>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        disabled={!item.isAvailable}
-                      >
-                        {item.isAvailable ? 'Add to Order' : 'Not Available'}
-                      </Button>
                     </Box>
                   </CardContent>
                 </MotionCard>
