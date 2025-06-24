@@ -39,8 +39,9 @@ const customTheme = createTheme({
 })
 
 const developers = [
-  { name: 'Million Demeke', href: 'https://t.me/lifam21', avatar: 'M' },
   { name: 'Abel Beyene', href: 'https://abel-codes.vercel.app/', avatar: 'A' },
+  { name: 'Million Demeke', href: 'https://t.me/lifam21', avatar: 'M' },
+ 
 ]
 
 function App() {
