@@ -68,7 +68,6 @@ function App() {
           </Routes>
         </Router>
 
-        {/* Contact Developers Dialog */}
         <Dialog open={open} onClose={handleClose} fullWidth maxWidth="xs">
           <DialogTitle>
             <Typography variant="h6" align="center">
@@ -117,7 +116,6 @@ function App() {
           </DialogActions>
         </Dialog>
 
-        {/* Responsive Footer */}
         <Box
           component="footer"
           sx={{
@@ -152,15 +150,31 @@ function App() {
 
               <Button
                 onClick={handleOpen}
-                variant="text"
+                variant="contained"
+                color="secondary"
                 sx={{
                   color: '#fff',
                   textTransform: 'none',
-                  fontWeight: 500,
-                  '&:hover': { bgcolor: 'rgba(255,255,240,0.1)' },
+                  fontWeight: 600,
+                  boxShadow: 2,
+                  borderRadius: 2,
+                  px: 3,
+                  py: 1,
+                  fontSize: '0.75rem',
+                  transition: 'background 0.2s, box-shadow 0.2s, transform 0.1s',
+                  '&:hover': {
+                    bgcolor: 'secondary.dark',
+                    boxShadow: 4,
+                    transform: 'scale(1.04)',
+                  },
+                  '&:active': {
+                    bgcolor: 'secondary.main',
+                    boxShadow: 1,
+                    transform: 'scale(0.98)',
+                  },
                 }}
               >
-                Meet the Devs
+                Meet the Developers
               </Button>
             </Box>
           </Container>

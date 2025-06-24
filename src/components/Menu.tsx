@@ -79,6 +79,7 @@ const Menu: React.FC = () => {
     <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       <Box
         sx={{
+          mt:8,
           px: 2,
           py: 1,
           display: 'flex',
@@ -87,10 +88,11 @@ const Menu: React.FC = () => {
         }}
       >
         <Box
+        pl={5}
           component="img"
           src={logo}
           alt="Logo"
-          sx={{ height: 36, objectFit: 'contain' }}
+          sx={{ height: 100, objectFit: 'contain' }}
         />
         {!isMdUp && (
           <IconButton onClick={toggleDrawer}>
@@ -200,7 +202,14 @@ const Menu: React.FC = () => {
             }}
           >
             {filtered.map((item: MenuItem) => (
-              <CardActionArea key={item.id} sx={{ width: '100%', maxWidth: 160 }} onClick={() => handleCardClick(item)}>
+              <CardActionArea
+                key={item.id}
+                sx={{
+                  width: '100%',
+                  maxWidth: { xs: 160, md: 220 },
+                }}
+                onClick={() => handleCardClick(item)}
+              >
                 <MotionCard
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -211,7 +220,7 @@ const Menu: React.FC = () => {
                     overflow: 'hidden',
                     transition: 'transform 0.3s, box-shadow 0.3s',
                     width: '100%',
-                    maxWidth: 160,
+                    maxWidth: { xs: 160, md: 220 },
                     '&:hover': {
                       transform: 'translateY(-4px)',
                       boxShadow: 6,
@@ -221,10 +230,11 @@ const Menu: React.FC = () => {
                   <Box sx={{ position: 'relative' }}>
                     <CardMedia
                       component="img"
-                      height="70"
+                      height={70}
                       image={item.image}
                       alt={item.name}
                       sx={{
+                        height: { xs: 70, md: 140 },
                         objectFit: 'cover',
                         transition: 'transform 0.3s',
                         '&:hover': { transform: 'scale(1.05)' },
