@@ -146,20 +146,26 @@ function App() {
               justifyContent: 'center',
             }}
           >
-            <span style={{ fontSize: 13 }}>+251907268333</span>
-            <span
-              style={{
-                cursor: 'pointer',
-                color: '#fff',
-                textDecoration: 'underline',
-                fontWeight: 500,
-                fontSize: 13,
-                marginLeft: 12,
-              }}
+            <span style={{ fontSize: 13 }}>+251947218149</span>
+            <Button
               onClick={handleOpen}
+              color="secondary"
+              variant="contained"
+              size="small"
+              sx={{
+                fontSize: 13,
+                marginLeft: 2,
+                textTransform: 'none',
+                fontWeight: 500,
+                boxShadow: 'none',
+                background: '#8d6e63',
+                '&:hover': {
+                  background: '#795548',
+                },
+              }}
             >
-              Contact Developer
-            </span>
+              Contact Devs
+            </Button>
           </Box>
           <span style={{ width: 80 }}></span>
         </footer>
